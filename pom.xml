@@ -130,6 +130,10 @@
           <mainClass>com.eteks.sweethome3d.SweetHome3D</mainClass>
           <!-- Include the bundled system-scoped legacy libraries at launch. -->
           <classpathScope>compile</classpathScope>
+          <forcedJvmPackages>
+            <forcedJvmPackage>com.apple.eio</forcedJvmPackage>
+            <forcedJvmPackage>com.apple.eawt</forcedJvmPackage>
+          </forcedJvmPackages>
         </configuration>
       </plugin>
     </plugins>
