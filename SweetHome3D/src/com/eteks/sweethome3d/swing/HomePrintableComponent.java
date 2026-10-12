@@ -42,8 +42,6 @@ import java.util.HashSet;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -386,39 +384,14 @@ public class HomePrintableComponent extends JComponent implements Printable {
             && planView != null
             && (homePrint == null || homePrint.isPlanPrinted())) {
 
-      // Gather levels in the order they appear in the home
-      List<Level> viewableLevels = new ArrayList<Level>();
-      for (Level level : this.home.getLevels()) {
-        if (level.isViewable()) {
-          viewableLevels.add(level);
-        }
-      }
+      // PlanComponent handles printing each viewable level.
+      pageExists = ((Printable)planView).print(
+              g2D, pageFormat, page - this.furniturePageCount);
 
-      int planPageIndex = page - this.furniturePageCount;
-
-      // One plan page for each viewable level
-      if (planPageIndex >= 0 && planPageIndex < viewableLevels.size()) {
-
-        // Remember the user's original selection
-        Level originalLevel = this.home.getSelectedLevel();
-
-        try {
-          // Temporarily select the level to print
-          this.home.setSelectedLevel(viewableLevels.get(planPageIndex));
-
-          // Each selected level is printed starting at page index 0
-          pageExists = ((Printable)planView).print(g2D, pageFormat, 0);
-
-        } finally {
-          // Restore the original level even if printing fails
-          this.home.setSelectedLevel(originalLevel);
-        }
-
-        if (pageExists == PAGE_EXISTS
-                && !this.printablePages.contains(page)) {
-          this.printablePages.add(page);
-          this.planPageCount++;
-        }
+      if (pageExists == PAGE_EXISTS
+              && !this.printablePages.contains(page)) {
+        this.printablePages.add(page);
+        this.planPageCount++;
       }
     }
     View view3D = this.controller.getHomeController3D().getView();
